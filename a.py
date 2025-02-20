@@ -2,6 +2,9 @@ import requests
 from datetime import datetime, timezone
 import logging
 import pytz
+from sms import send_sms
+
+print("Start Here!")
 
 # Define the API endpoint
 API_URL = "http://localhost:8000/pppoe-clients"
@@ -70,6 +73,8 @@ def check_expired_clients():
     current_time = datetime.now(nairobi_tz)
 
     for client in clients:
+        # print("Checking here")
+        # print("Client Name: " + client["full_name"] + " Client Phone: " + client["phone_number"])
         if client.get("active") == 1:  # Only check active clients
             end_date_str = client.get("end_date")
             if end_date_str:
@@ -78,15 +83,27 @@ def check_expired_clients():
                     # Assign the Nairobi timezone to end_date
                     end_date = nairobi_tz.localize(end_date)
 
+                    # print("End Date: ", end_date)
+                    # print("Current Time: ", current_time)
+
                     if end_date < current_time:
+                        # print("Second Step")
+                        # Send SMS here
                         print(
                             f"manage_ppp_secret({client['router_id']}, 'disable', '{client['secret']}', {client['id']})"
                         )
                         manage_ppp_secret(client["router_id"], "disable", client["secret"], client["id"])
+                        # print("Sent PPP Request")
 
+                        send_sms(
+                            f"Hello {client['full_name']} your subscription has Expired. Visit https://swiftnet-fe.vercel.app/authentication/acustomer?id={client['id']} to renew your subscription.",
+                            [client["phone_number"]]  # Pass as a proper list, not a formatted string
+                        )
+
+                        # print("Sent SMS")
                 except ValueError:
                     error_message = (
-                        f"Router = {client.get('router_id', 'Unknown')} | Invalid date format for client {client.get('full_name', 'Unknown')}: {end_date_str}"
+                        f"Router => {client.get('router_id', 'Unknown')} | Invalid date format for client {client.get('full_name', 'Unknown')}: {end_date_str}"
                     )
                     logging.error(error_message)
                     print(error_message)
