@@ -1,5 +1,4 @@
-from sms import send_sms
+from wa import send_whatsapp_message  # Ensure 'a' is the correct module name
 
-response = send_sms("Hello System User your subscription has Expired. Visit https://swiftnet-fe.vercel.app/authentication/acustomer?id=225 to renew your subscription.", ['0790485731'])
-
-print(response)
+# Call the function and capture the result
+send_whatsapp_message('Hello Arthur', '0790485731')
