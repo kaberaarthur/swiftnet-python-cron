@@ -141,6 +141,11 @@ def check_expired_clients():
                         )
                         print(f"Sent reminder to {client['full_name']} - {days_difference} days until expiry")
 
+                        # Open the log file in append mode
+                        with open("reminder.log", "a") as log_file:
+                            log_message = f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')} - Reminder sent to User ID {client_id}\n"
+                            log_file.write(log_message)
+
                         # Update the reminder field to 0 to prevent resending
                         update_reminder_status(client["id"], 'disable')
 
