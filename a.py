@@ -128,7 +128,7 @@ def check_expired_clients():
                     # Check for imminent expiry (2–3 days remaining) and reminder flag
                     if client.get("reminder") == 1 and 2 <= days_difference <= 5:
                     #if client.get("reminder") == 1 and 2 <= days_difference <= 3 and client_id == 225:
-                        print("Remind User: ", client.get("full_name"), "of ID - ", client.get("id"))
+                        print("Remind User: ", client.get("full_name"), "with ID - ", client.get("id"))
                         print("User End Date: ", client.get("end_date"))
                         # Send WhatsApp reminder for imminent expiry
                         send_whatsapp_message(
